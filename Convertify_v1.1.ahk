@@ -1,11 +1,22 @@
-﻿;Convertify v1
+﻿;Convertify v1.1
 ;An audio converter designed with Asterisk compatibility in mind
-;JamesR, with input from Mike in Onbaording and Khris from Night Krew
+;JamesR
+
+;Changelog:
+;Batch converts! Added a new GUI menu that asks how many files you want to convert.
+;Convertify.exe moved to bin folder
+;Log files incremented to log-1.1.txt
+
+;Bugs:
+;No new ones were introduced as far as I know.
+;v1 - File save dialog does not automaitcally append .wav like it should, so I hardcode it, causing .wav.wav if you manually type .wav.
 
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ;debugMode lets you set what level of debugging you need. 0 is off, 4 is near pedantic verbosity with lossa tools. Note: this does not affect logging
-global debugMode = 0 ; 0, 1, 2, 3, 4
+;this is unused
+global debugMode = 0
+
 
 ;This lets our two file dialogs and the convert function play nice and share data.
 global sourceFile = ""
@@ -16,14 +27,36 @@ doesLogFileExist() ;checks for log
 ;if the program doesnt crash, this logs a good boot
 logAddBootSuccessful()
 
-;File load dialog
-loadFile()
+InputBox, LoopCount, Convertify v1.1, Please enter the number of files you are converting., , 330, 130
+logAddInfo("Multi-Select GUI opened.")
+if ErrorLevel
+	;MsgBox, Conversion canceled. Convertify will now close.
+	logAddInfo("Multi-Select GUI closed with no selection. App terminated.")
+If LoopCount is not digit
+    {
+    MsgBox, A valid number was not entered.
+	logAddInfo("User entered a non valid string into the Multi-Select GUI. App terminated.")
+	logAddInfo("String entered: " . LoopCount)
+	}
+else
+{
+logAddInfo("Entering interate loop with LoopCount set to: " . LoopCount)
+Loop, %LoopCount%,
+	{
+	    logAddInfo("Loop Iteration: " . A_Index)
+		;File load dialog
+		loadFile()
 
-;File save dialog
-selectSavePath()
+		;File save dialog
+		selectSavePath()
 
-;invokes Convertify and passes the variables to it
-convertStart()
+		;invokes Convertify and passes the variables to it
+		convertStart()
+	}
+logAddInfo("Loop exiting successfully!")
+logAddClose()
+ExitApp
+}
 
 return
 
@@ -70,19 +103,15 @@ destinationPath=%destinationFile%.wav ;bugfix - save directory doesnt seem to sa
 logAddInfo("sourceFile is set to " . sourceFile)
 logAddInfo("destinationPath is set to " . destinationPath)
 
-logAddInfo("Invoking Convertify with the parameters: " . A_ScriptDir . "\convertify.exe -i " . sourceFile . " -ar 8000 -ac 1 " . destinationPath . " -y")
+logAddInfo("Invoking Convertify with the parameters: " . A_ScriptDir . "\bin\convertify.exe -i " . sourceFile . " -ar 8000 -ac 1 " . destinationPath . " -y")
 
 
 ;this tells Convertify where the source file is, the type of conversion we want to happen, 
 ;bitrate, sets it to mono, and saves it to the path the user specified earlier.
-Run %A_ScriptDir%\convertify.exe -i "%sourceFile%" -ar 8000 -ac 1 "%destinationPath%" -y 
+Run %A_ScriptDir%\bin\convertify.exe -i "%sourceFile%" -ar 8000 -ac 1 "%destinationPath%" -y 
 
 logAddInfo("File should be converted!") 
 
-logAddClose()
-ExitApp
-
-;this should never be called because of the Exit above
 Return
 }
 
@@ -129,7 +158,7 @@ logAddBootSuccessful()
 	FileAppend,
 		(
 		%currentTime% [INFO] Application boot successful. `n
-		), %A_WorkingDir%\log.txt 
+		), %A_WorkingDir%\log-1.1.txt 
 	return
 }
 
@@ -140,7 +169,7 @@ logAddError(logErrorString="")
 	FileAppend,
 		(
 		%currentTime% [ERROR] %logErrorString% `n
-		), %A_WorkingDir%\log.txt
+		), %A_WorkingDir%\log-1.1.txt
 	return
 }
 
@@ -151,7 +180,7 @@ logAddClose()
 	FileAppend,
 		(
 		%currentTime% [INFO] Application close requested. `n
-		), %A_WorkingDir%\log.txt
+		), %A_WorkingDir%\log-1.1.txt
 	return
 }
 
@@ -162,6 +191,6 @@ logAddInfo(logInfoString="")
 	FileAppend,
 		(
 		%currentTime% [INFO] %logInfoString% `n
-		), %A_WorkingDir%\log.txt
+		), %A_WorkingDir%\log-1.1.txt
 	return
 }
