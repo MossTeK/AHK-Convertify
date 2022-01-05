@@ -1,4 +1,4 @@
-﻿;Convertify v1.1
+﻿;Convertify v1.2
 ;An audio converter designed with Asterisk compatibility in mind
 ;JamesR
 
@@ -28,12 +28,16 @@ doesLogFileExist() ;checks for log
 logAddBootSuccessful()
 
 
+;debug 
+selectionMode = 0 ;0 - Single File 1 - Multiple File 2 - Folder
+inputPath= 
+outputPath= 
 
 Gui,Add,Button,x215 y11 w43 h23,Select Input
-Gui,Add,Edit,x110 y12 w100 h21,Edit
+Gui,Add,Edit,x110 y12 w100 h21,%inputPath%
 Gui,Add,Text,x10 y15 w88 h13,Input File(s)/Folder
 Gui,Add,Button,x215 y41 w43 h23,Select Output
-Gui,Add,Edit,x110 y42 w100 h21,Edit
+Gui,Add,Edit,x110 y42 w100 h21,%outputPath%
 Gui,Add,Text,x10 y45 w96 h13,Output File(s)/Folder
 Gui,Add,Radio,x11 y75 w75 h13,Folder Mode
 Gui,Add,Radio,x11 y95 w70 h13,Files Mode
@@ -90,8 +94,6 @@ ExitApp
 
 ;return
 
-
-
 GuiClose:
 logAddClose()
 ExitApp
@@ -104,58 +106,123 @@ ExitApp
 loadFile()
 {
 logAddInfo("opening file select dialog")
-FileSelectFile, sourceFile, 3, RootDir\Filename, Open audio file, Audio (*.mp3; *.wav; *.ogg; *.m4a)
-if (sourceFile = "")
-    {
-    logAddInfo("File selection was canceled, closing program.")
-    logAddClose()
-    ExitApp, [ ExitCode]
-    }
-else
-    {
-    logAddInfo("The user selected the following:" . sourceFile)
-    }
+
+if (selectionMode = 0)
+	{
+		FileSelectFile, sourceFile, 3, RootDir\Filename, Open audio file, Audio (*.mp3; *.wav; *.ogg; *.m4a)
+		if (sourceFile = "")
+			{
+				logAddInfo("File selection was canceled, closing program.")
+				logAddClose()
+				;ExitApp, [ ExitCode]
+			}
+		else
+			{
+				logAddInfo("The user selected the following:" . sourceFile)
+			}
+	}
+	
+if (selectionMode = 1)	
+	{
+		FileSelectFile, sourceFile, M3, RootDir\Filename, Open audio file, Audio (*.mp3; *.wav; *.ogg; *.m4a)
+		if (sourceFile = "")
+			{
+				logAddInfo("File selection was canceled, closing program.")
+				logAddClose()
+				;ExitApp, [ ExitCode]
+			}
+		else
+			{
+				logAddInfo("The user selected the following:" . sourceFile)
+			}
+	}
+	
+if (selectionMode = 2)	
+	{
+		FileSelectFolder, inputPath
+	}
+	
+else 
+	{
+	Msgbox This is not implemented yet
+	}
 }
 
 selectSavePath()
 {
     logAddInfo("opening file save dialog")
-FileSelectFile, destinationFile, S, RootDir\Filename, Save audio file, Audio (*.wav)
-if (destinationFile = "")
-    {
-    logAddInfo("File selection was canceled, closing program.")
-    logAddClose()
-    ExitApp, [ ExitCode]
-    }
-else
-    {
-    logAddInfo("The user selected the following:" . destinationFile)
-    }
+	
+	;debug 
+	selectionMode = 0
+	
+	if (selectionMode = 0)
+		{
+			FileSelectFile, destinationFile, S, RootDir\Filename, Save audio file, Audio (*.wav)
+			if (destinationFile = "")
+				{
+					logAddInfo("File selection was canceled, closing program.")
+					logAddClose()
+					;ExitApp, [ ExitCode]
+				}
+			else
+				{
+					logAddInfo("The user selected the following:" . destinationFile)
+				}
+		}
+	else
+	{
+	Msgbox This is not implemented yet
+	}
 }
 
 convertStart()
 {
+	if (selectionMode = 0)	
+		{
+			SplitPath, sourceFile, sourceName
 
-SplitPath, sourceFile, sourceName
+			sourcePath=%A_ScriptDir%\%sourceFile%
+			destinationPath=%destinationFile%.wav ;bugfix - save directory doesnt seem to save the .wav even though im explicitly telling it too and this makes me sad
 
-sourcePath=%A_ScriptDir%\%sourceFile%
-destinationPath=%destinationFile%.wav ;bugfix - save directory doesnt seem to save the .wav even though im explicitly telling it too and this makes me sad
+			logAddInfo("sourceFile is set to " . sourceFile)
+			logAddInfo("destinationPath is set to " . destinationPath)
 
-logAddInfo("sourceFile is set to " . sourceFile)
-logAddInfo("destinationPath is set to " . destinationPath)
+			logAddInfo("Invoking Convertify with the parameters: " . A_ScriptDir . "\bin\convertify.exe -i " . sourceFile . " -ar 8000 -ac 1 " . destinationPath . " -y")
 
-logAddInfo("Invoking Convertify with the parameters: " . A_ScriptDir . "\bin\convertify.exe -i " . sourceFile . " -ar 8000 -ac 1 " . destinationPath . " -y")
+			;this tells Convertify where the source file is, the type of conversion we want to happen, 
+			;bitrate, sets it to mono, and saves it to the path the user specified earlier.
+			Run %A_ScriptDir%\bin\convertify.exe -i "%sourceFile%" -ar 8000 -ac 1 "%destinationPath%" -y 
 
+			logAddInfo("File should be converted!")
+			Return
+		}
+	
+	if (selectionMode = 1)	
+		{
+			;SplitPath, sourceFile, sourceName
 
-;this tells Convertify where the source file is, the type of conversion we want to happen, 
-;bitrate, sets it to mono, and saves it to the path the user specified earlier.
-Run %A_ScriptDir%\bin\convertify.exe -i "%sourceFile%" -ar 8000 -ac 1 "%destinationPath%" -y 
+			;sourcePath=%A_ScriptDir%\%sourceFile%
+			;destinationPath=%destinationFile%.wav ;bugfix - save directory doesnt seem to save the .wav even though im explicitly telling it too and this makes me sad
 
-logAddInfo("File should be converted!") 
+			;logAddInfo("sourceFile is set to " . sourceFile)
+			;logAddInfo("destinationPath is set to " . destinationPath)
 
-Return
+			;logAddInfo("Invoking Convertify with the parameters: " . A_ScriptDir . "\bin\convertify.exe -i " . sourceFile . " -ar 8000 -ac 1 " . destinationPath . " -y")
+
+			;this tells Convertify where the source file is, the type of conversion we want to happen, 
+			;bitrate, sets it to mono, and saves it to the path the user specified earlier.
+			;Run %A_ScriptDir%\bin\convertify.exe -i "%sourceFile%" -ar 8000 -ac 1 "%destinationPath%" -y 
+
+			;logAddInfo("File should be converted!")
+			Msgbox This is not implemented yet
+			return
+		}
+	else
+		{
+			Msgbox This is not implemented yet
+			return
+		}
 }
-
 ;~~~~~~~~~~~~~~~~~~~~~
 ;Logging Functions
 ;~~~~~~~~~~~~~~~~~~~~~
@@ -166,7 +233,7 @@ Return
 doesLogFileExist()
 {
 	
-	if FileExist("log.txt")
+	if FileExist("log-1.2.txt")
 	{
 		if (debugMode = 4)
 		{
@@ -177,7 +244,7 @@ doesLogFileExist()
 		}
 	}
 	
-	if !FileExist("log.txt")
+	if !FileExist("log-1.2.txt")
 	{
 		if (debugMode = 4)
 		{
@@ -199,7 +266,7 @@ logAddBootSuccessful()
 	FileAppend,
 		(
 		%currentTime% [INFO] Application boot successful. `n
-		), %A_WorkingDir%\log-1.1.txt 
+		), %A_WorkingDir%\log-1.2.txt 
 	return
 }
 
@@ -210,7 +277,7 @@ logAddError(logErrorString="")
 	FileAppend,
 		(
 		%currentTime% [ERROR] %logErrorString% `n
-		), %A_WorkingDir%\log-1.1.txt
+		), %A_WorkingDir%\log-1.2.txt
 	return
 }
 
@@ -221,7 +288,7 @@ logAddClose()
 	FileAppend,
 		(
 		%currentTime% [INFO] Application close requested. `n
-		), %A_WorkingDir%\log-1.1.txt
+		), %A_WorkingDir%\log-1.2.txt
 	return
 }
 
@@ -232,6 +299,6 @@ logAddInfo(logInfoString="")
 	FileAppend,
 		(
 		%currentTime% [INFO] %logInfoString% `n
-		), %A_WorkingDir%\log-1.1.txt
+		), %A_WorkingDir%\log-1.2.txt
 	return
 }
