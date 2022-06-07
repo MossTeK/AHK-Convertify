@@ -10,3 +10,8 @@ Run the .ahk script, and the above GUI will pop open that will let you choose in
 v1.3 Beta 1 has added manual handling of output files back into the mix of modes - Automatic handling of output files still exists and works exactly as it did in v1.2, you just now have the option to have the program automatically spit out into the same input directory or a custom one of your choosing.
 
 v1.3Beta 2 will add config support to remember your preference for output directory and options.
+
+# Bugs
+
+1. Folder converting doesn't output properly to logs, but it *does* output correct files.
+2. You can start converting before you select an outputFolderManual - this seems like a bad idea
