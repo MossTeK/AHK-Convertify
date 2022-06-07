@@ -1,19 +1,12 @@
 # AHK-Convertify
-An AHK script designed to convert files with Asterisk compatibility in mind. Now with a new GUI! The GUI has gone under a series of modifications and is designed for a lot of future options - currently only the options relevant to 1.2 are enabled and working.
+An AHK script designed to convert files with Asterisk compatibility in mind. Now with a new GUI!
 
-The eventual full GUI will look like this:
+The GUI is now mostly complete (pretty sure it wont change at least lol) and now looks like:
 
-![image](https://user-images.githubusercontent.com/5680448/151085037-6d255d3f-8c14-4bd6-9653-c311edcf8c1f.png)
-
-
-The current UI looks like this:
-
-![image](https://user-images.githubusercontent.com/5680448/151085062-49aa0fd0-fe14-464d-bc98-b6e3fd409526.png)
+![image](https://user-images.githubusercontent.com/5680448/172486171-3c90bbfe-a311-4e70-989e-2c52ea0a259a.png)
 
 Run the .ahk script, and the above GUI will pop open that will let you choose input files. This will open a Windows-native file selection dialog that supports Ctrl and Shift to select multiple files at once.
 
-This build also has a new feature - Automatic handling of output files! This will put the converted files into the source directory (aka, right beside the original files) with a "_converted.wav" on the end.
+v1.3 Beta 1 has added manual handling of output files back into the mix of modes - Automatic handling of output files still exists and works exactly as it did in v1.2, you just now have the option to have the program automatically spit out into the same input directory or a custom one of your choosing.
 
-Future builds will enable a checkbox to let the program automatically manage your outputs, or to let you select your own.
-
-Future builds will also enable folder selection mode for both input and output - meaning you can select a folder and the program will automatically select all compatible files and convert them for you.
+v1.3Beta 2 will add config support to remember your preference for output directory and options.
