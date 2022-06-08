@@ -25,8 +25,6 @@
 ;Vars and GUI
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#include %A_ScriptDir%\bin\ini.ahk
-
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #EscapeChar | ; thanks Jacob for being you and somehow managing to break AHK itself
 
@@ -317,50 +315,6 @@ else
 		logAddError("GUI - User tried to convert files before selecting any")
 		SB_SetText("Please select a file first!")
 	}
-}
-
-;~~~~~~~~~~~~~~~~~~~~~
-;Ini Functions
-;~~~~~~~~~~~~~~~~~~~~~
-
-;Check if ini exists, if not create it.
-doesIniExist()
-{
-	
-	if FileExist("convertify.ini")
-	{
-	ini := new Ini(A_ScriptDir . "\convertify.ini")
-	ini.Get("convertEnabled", "Settings", default_value = "0")
-	ini.Get("selectionMode", "Settings", default_value = "0")
-	ini.Get("fileManage", "Settings", default_value = "1")
-	ini.Get("inputPath", "Settings", default_value = "A_ScriptDir")
-	ini.Get("outputPathManual", "Settings", default_value = "outputPathManual")
-	ini.Get("testParm", "Debug", default_value = "NEVER GONNA GIVE U UP")
-	ini.Save()
-	;Msgbox %default_value%
-	sleep 100
-	}
-	
-	if !FileExist("convertify.ini")
-	{
-	logAddInfo("BOOT - Ini file missing, generating new one.")
-	FileAppend,
-	(
-	[Settings]
-	), %A_ScriptDir%\convertify.ini 
-	ini := new Ini(A_ScriptDir . "\convertify.ini")
-	ini.Set("convertEnabled", "Settings", convertEnabled)
-	ini.Set("selectionMode", "Settings", selectionMode)
-	ini.Set("fileManage", "Settings", fileManage)
-	ini.Set("inputPath", "Settings", inputPath)
-	ini.Set("outputPathManual", "Settings", outputPathManual)
-	
-	ini.Save()
-	sleep 100
-	logAddInfo("BOOT - Ini generation complete!")
-	}
-	
-	return
 }
 
 ;~~~~~~~~~~~~~~~~~~~~~
