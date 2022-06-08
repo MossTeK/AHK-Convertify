@@ -44,8 +44,6 @@ global inputPath=A_ScriptDir
 global outputPath=A_ScriptDir
 global outputPathManual=A_ScriptDir
 
-doesIniExist() ; You want to do this later in the file or else empty variables galore!
-
 Gui,Add,Button,x75 y9 w120 h23,Input Files
 Gui,Add,Text,x10 y31 w250 h13,_________________________________________________________________
 Gui,Add,Button,x75 y113 w120 h23,Convert!
