@@ -1,33 +1,33 @@
 # AHK-Convertify
 An AHK script designed to convert files with Asterisk compatibility in mind. Now with a new GUI!
 
-The GUI is now mostly complete (pretty sure it wont change at least lol) and now looks like:
+The GUI is now mostly complete and it looks like:
 
-![image](https://user-images.githubusercontent.com/5680448/172486171-3c90bbfe-a311-4e70-989e-2c52ea0a259a.png)
+![image](https://user-images.githubusercontent.com/5680448/178305026-2f059306-ba77-46c5-9bd2-e84730e2619d.png)
 
 Run the .ahk script, and the above GUI will pop open that will let you choose input files. This will open a Windows-native file selection dialog that supports Ctrl and Shift to select multiple files at once.
 
-v1.3 Beta 1 has added manual handling of output files back into the mix of modes - Automatic handling of output files still exists and works exactly as it did in v1.2, you just now have the option to have the program automatically spit out into the same input directory or a custom one of your choosing.
+v1.4 is a overhaul of how I was structuring the project and a minor rewrite. 1.3 was getting out of hand with a ton of undocumented changes everywhere just desperately trying to get everything to work. 
 
-v1.3Beta 2 will add config support to remember your preference for output directory and options.
-
-v1.3Beta4 is the current RC and has all features present and working with a "final" GUI.
+Folder mode has been removed due to being largely redundant with the normal file selection mode, plus it would require extra work on my side to filter out unsupported files, as well as implementaiton being a bit of a headache.
 
 # Changelog
 
-Code cleanup - lots of old, unused code was removed. Most code was touched/changed in this release, if at least minorly.
+Slight revamp to project flow to make it easier to understand and follow.
 
-New GUI - This one's actually finished!
+Ini support! (This is still experimental as of beta3 and is mostly disabled as a result)
 
-Multi File mode! This will let you select multiple files by holding shift or ctrl.
+Folder mode has been removed as it was largely redundant with multiple file selection.
 
-Folder mode - convert all files in a folder at once!
+Automatic file management - Now reads your preference from the INI! Disabling lets you select an output folder. Enabling it will output files to /out/ in the script directory.
 
-Automatic file management - Now you can disable or enable this! Disabling lets you select an output folder.
+Ini loading is currently working somewhat. If you want to experiment, an example INI files is attached. Renmove the .txt on the end so it reads "convertify.ini" and place it in the script directory.
 
-Logs are much more verbose and detailed now!
+[convertify.ini.txt](https://github.com/JamesR-cB/AHK-Convertify/files/9085663/convertify.ini.txt)
 
 # Bugs Fixed
+
+All bugs from v1.3 that were fixed:
 
 Fixed an oversight where logging was using WorkingDir instead of ScriptDir, resulting in a moving log file
 
@@ -45,11 +45,20 @@ Fixed all instances of Error logs erroniously reporting they were [INFO] and not
 
 Fixed a bug where you could start converting files before you selected files to convert
 
+All bugs from 1.4 that were fixed:
+
+Spawning the process for Convertify.exe would sometimes randomly fail
+
+In specific circumstances it was possible to create an infinite load loop.
+
+Fixed outputting of files with manual mode ignoring the user selection
+
+Fixed outputting of files with manual mode creating empty files
+
+Fixed outputting of files with manual mode just doing nothing
 
 # Known Bugs
 
-There is a nasty race condition with folder select that if you output to the same directory as the source files,
+There is a nasty race condition with folder select that if you output to the same directory as the source files, and had too many files in there or a slow enough PC, the loop would see new conversions and re-convert them endlessly.
 
-and had too many files in there or a slow enough PC, the loop would see new conversions and re-convert them endlessly.
-
-Solution: Don't output files to the same directory as the source files :) (working on a fix but it wont be ready this ver)
+Solution: Don't output files to the same directory as the source files :)
