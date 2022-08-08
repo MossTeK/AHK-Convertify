@@ -156,8 +156,8 @@ Gui,2:Add,Text,x125 y275 w250 h13,Convertify %appVersion%
 Gui,2:Add,Text,x125 y300 w250 h13,Converticheck 0.1alpha
 Gui,2:Add,Text,x125 y325 w250 h13,Build %buildNumber%
 Gui,2:Add,Text,x400 y275 w250 h13,Current environment for the app:
-;Gui,2:Add,Text,x400 y300 w250 h13,Production/Release
-Gui,2:Add,Text,x400 y300 w250 h13,Development/Debugging/Testing
+Gui,2:Add,Text,x400 y300 w250 h13,Production/Release
+;Gui,2:Add,Text,x400 y300 w250 h13,Development/Debugging/Testing
 Gui,2:Add,Checkbox,x5 y185 w170 h23,Empty Option 1
 Gui,2:Add,Text,x215 y189 w250 h13,Reserved for future use.
 Gui,2:Add,Checkbox,x5 y225 w170 h23,Empty Option 2
