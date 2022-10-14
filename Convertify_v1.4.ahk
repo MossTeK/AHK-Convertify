@@ -436,21 +436,19 @@ else
 ;~~~~~~~~~~~~~~~~~~~~~
 
 ;Check if log exists in current working directory, if not create it.
-doesLogFileExist()
-{
-
-	if FileExist("log-%appVersion%-%buildNumber%.txt")
-	{
+doesLogFileExist(){
+logFileName = %A_ScriptDir%/log-%appVersion%-%buildNUmber%.txt ; The string wont enumerate when called in the FileExsists funciton so we have to declare the filepath as a vairiable. This is the only way I could get this working I suspect this is an AHK issue.
+	if FileExist(logFileName){
 	logAddInfo("I/O - Log file exists!")
 	return
 	}
-
-	if !FileExist("log-%appVersion%-%buildNumber%.txt")
-	{
+	
+	if !FileExist(logFileName){
 	logAddError("I/O - Log file does not exist, creating new log.")
 	return
+	
 	}
-
+	
 }
 
 ;Log application startup.
