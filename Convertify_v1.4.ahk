@@ -490,9 +490,6 @@ logAddClose()
 logAddInfo(logInfoString="")
 {
 	FormatTime, currentTime, A_now, d-MMM-yyyy hh:mm:ss tt
-	FileAppend,
-		(
-		%currentTime% [INFO] %logInfoString% `n
-		), %A_ScriptDir%\log-%appVersion%-%buildNumber%.txt
+	FileAppend, %currentTime% [INFO] %logInfoString% `n, %A_ScriptDir%\log-%appVersion%-%buildNumber%.txt
 	return
 }
